@@ -217,3 +217,4 @@ BENCHMARK(BM_EncoderNewOrderSingle)
     ->ComputeStatistics("p99",  pct99)
     ->ComputeStatistics("p999", pct999);
 
+
