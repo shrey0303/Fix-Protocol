@@ -71,8 +71,6 @@ TCP recv()
 
 ### Why each design decision exists
 
-Every choice below has a measurable reason. If you'd make a different choice, I'd like to hear why.
-
 | Decision | Why | Tradeoff |
 |----------|-----|----------|
 | `string_view` over `std::string` | Parsing 15 fields into `std::string` means 15 heap allocations per message (above SSO threshold). `string_view` eliminates all of them. | Caller must keep the raw buffer alive while `ParsedMessage` is in use. Dangling views are silent. Documented on the struct. |
@@ -83,15 +81,6 @@ Every choice below has a measurable reason. If you'd make a different choice, I'
 | `alignas(64)` on `ParsedMessage` | 64 bytes is the cache line width on x86. Misaligned structs can span two cache lines, requiring two L1 fetches for a single access. | Wastes up to 63 bytes of padding per object. Acceptable for a 1024-slot pool. |
 | Single-pass encoder with header backfill | FIX requires tag 8 (BeginString) and tag 9 (BodyLength) before the body, but body length isn't known until the body is written. Writing the body at a reserved offset and backfilling the header avoids a two-pass approach. | One `memmove` of ~170 bytes (L1-hot). Alternative: gather-write (`writev`) at the network layer. |
 
-## What This Project Is Not
-
-This is a parser, not a session engine. It does not include:
-- TCP connection management or non-blocking I/O
-- Heartbeat timer or keep-alive logic
-- Resend request handling for sequence gaps
-- FIX dictionary loaded from XML — tag definitions are compile-time `constexpr` constants
-
-These would be required for a production FIX gateway. The parser itself stays pure and stateless (except for sequence tracking) so it can be embedded in any session layer.
 
 ## Benchmark Results
 
@@ -106,18 +95,6 @@ These would be required for a production FIX gateway. The parser itself stays pu
 | ParseMarketDataSnapshot  | 281 ns   | 3.55 M msg/s   |
 | EncoderNewOrderSingle    | 239 ns   | 4.18 M msg/s   |
 | QuickFIX-style baseline  | 894 ns   | 1.12 M msg/s   |
-
-### Windows (native)
-
-**Environment**: Windows 11 · GCC 16.1.0 (MinGW-w64 UCRT) · `-O2 -march=native`
-
-| Benchmark                | CPU Time | Throughput     |
-|--------------------------|----------|----------------|
-| ParseNewOrderSingle      | 322 ns   | 3.11 M msg/s   |
-| ParseExecutionReport     | 394 ns   | 2.54 M msg/s   |
-| ParseMarketDataSnapshot  | 361 ns   | 2.77 M msg/s   |
-| EncoderNewOrderSingle    | 765 ns   | 1.31 M msg/s   |
-| QuickFIX-style baseline  | 6855 ns  | 0.15 M msg/s   |
 
 Allocation per parse: **0 bytes** (verified by global `operator new` override counting 10,000 parses)
 
