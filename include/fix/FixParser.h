@@ -57,6 +57,3 @@ private:
 } // namespace fix
 
 #endif
-
-
-

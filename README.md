@@ -227,4 +227,3 @@ fix-parser-cpp/                         1,618 lines implementation
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-

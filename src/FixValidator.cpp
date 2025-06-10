@@ -79,4 +79,3 @@ ParseResult FixValidator::validate(const ParsedMessage& msg) noexcept {
 }
 
 } // namespace fix
-

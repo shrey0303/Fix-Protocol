@@ -75,6 +75,3 @@ if(ENABLE_FUZZER)
     target_compile_options(fix_fuzz PRIVATE -fsanitize=fuzzer,address)
     target_link_options(fix_fuzz PRIVATE -fsanitize=fuzzer,address)
 endif()
-
-
-

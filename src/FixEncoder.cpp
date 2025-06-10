@@ -329,7 +329,3 @@ size_t FixEncoder::encodeHeartbeat(char* out, size_t outLen,
 }
 
 } // namespace fix
-
-
-
-

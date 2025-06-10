@@ -584,5 +584,3 @@ TEST(ParserTest, TcpMessageBufferBackToBack) {
     size_t len3 = 0;
     EXPECT_EQ(tcpBuf.nextMessage(len3), nullptr);
 }
-
-

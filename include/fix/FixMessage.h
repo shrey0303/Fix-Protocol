@@ -174,8 +174,3 @@ static_assert(alignof(ParsedMessage) == 64,
 } // namespace fix
 
 #endif
-
-
-
-
-
