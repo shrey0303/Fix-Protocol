@@ -152,8 +152,6 @@ Allocation per parse: **0 bytes** (verified by global `operator new` override co
 - [x] LibFuzzer target
 - [x] Google Benchmark suite with P50/P99/P99.9 statistics
 - [x] Zero-allocation verification test (global `operator new` override)
-- [ ] Per-message tail latency via `rdtsc` (outside Google Benchmark's model)
-- [ ] Multi-threaded benchmark (parser is single-writer by design)
 
 ## Building
 
